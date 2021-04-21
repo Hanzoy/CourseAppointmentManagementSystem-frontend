@@ -1,0 +1,74 @@
+.total{
+  margin-top: 10px;
+  background-color: #fefefe;
+  .description{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    .title{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin-left: 20px;
+      >Text{
+        margin-left: 10px;
+        color: #5f8fcf;
+        font-size: 35px;
+        font-weight: bold;
+      }
+    }
+    .more{
+      color: rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      >Text{
+        margin-right: 20px;
+      }
+    }
+  }
+  .bar{
+    overflow-x: scroll;
+    overflow-y: hidden;
+    display: flex;
+    flex-direction: row;
+    .bar-item{
+      width: 25vw;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      margin: 10px 10px 30px 25px;
+
+      border-radius: 10px;
+      background-color: #ffffff;
+      box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2), 0 4.5px 15px 0 rgba(0, 0, 0, 0.19);//设置两层阴影
+
+      .bar-item-image{
+        width: 25vw;
+        height: 25vw;
+        border-radius: 10px;
+        >Image{
+          border-top-left-radius: 10px;
+          border-top-right-radius: 10px;
+          height: 100%;
+          width: 100%;
+        }
+      }
+      .bar-item-name{
+        margin-top: 10px;
+        margin-left: 15px;
+        margin-right: 15px;
+        font-size: 35px;
+      }
+      .bar-item-remark{
+        margin-left: 15px;
+        margin-right: 15px;
+        margin-bottom: 20px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 25px;
+        color: rgba(0,0,0,0.4);
+      }
+    }
+  }
+}

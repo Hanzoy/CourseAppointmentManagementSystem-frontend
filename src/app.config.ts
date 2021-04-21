@@ -1,6 +1,13 @@
+// src/app.config.js
+import { useGlobalIconFont } from './component/iconfont/helper';
+
 export default {
+  usingComponents: Object.assign(useGlobalIconFont()),
   pages: [
-    'pages/home/index'
+    'pages/Home/index',
+    'pages/Reservation/index',
+    'pages/Setting/index',
+    'pages/CharacterInfo/index',
   ],
   window: {
     backgroundTextStyle: 'light',
@@ -14,20 +21,20 @@ export default {
     list: [
       {
         "selectedIconPath": "images/home_blue.png",
-        "iconPath": "images/home.png",
-        "pagePath": "pages/home/index",
+        "iconPath": "images/home1.png",
+        "pagePath": "pages/Home/index",
         "text": "主页"
       },
       {
         "selectedIconPath": "images/month_blue.png",
         "iconPath": "images/month.png",
-        "pagePath": "pages/home/index",
+        "pagePath": "pages/Reservation/index",
         "text": "课程预约"
       },
       {
         "selectedIconPath": "images/setting_blue.png",
-        "iconPath": "images/setting.png",
-        "pagePath": "pages/home/index",
+        "iconPath": "images/Setting.png",
+        "pagePath": "pages/Setting/index",
         "text": "设置"
       },
     ]
