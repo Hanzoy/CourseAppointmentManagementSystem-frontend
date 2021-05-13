@@ -1,37 +1,79 @@
 import { Component } from 'react'
-import {View, Text} from '@tarojs/components'
+import {View} from '@tarojs/components'
+import Taro from '@tarojs/taro'
 import './index.less'
 import Swiper from '../../component/Swiper'
-import CharacterBar, {UserInfo} from '../../component/CharacterBar'
-
-const date = {
-  pictureUrl : ['https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fdealer2.autoimg.cn%2Fdealerdfs%2Fg6%2FM13%2F3B%2F13%2F620x0_1_q87_autohomedealer__wKgHzVaVtMuAM-HeAAGsnURWZ00237.JPG&refer=http%3A%2F%2Fdealer2.autoimg.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1621418197&t=d92c92122220cba758300c1a21659d2c',
-    'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fdealer2.autoimg.cn%2Fdealerdfs%2Fg6%2FM13%2F3B%2F13%2F620x0_1_q87_autohomedealer__wKgHzVaVtMuAM-HeAAGsnURWZ00237.JPG&refer=http%3A%2F%2Fdealer2.autoimg.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1621418197&t=d92c92122220cba758300c1a21659d2c'],
-  userInfo : [
-    {id:'1',name:'text',avatarUrl:'https://pic2.zhimg.com/80/v2-a98aec34a8ee6c0b30c8c178696220be_1440w.jpg?source=1940ef5c',remark : 'remarkTest_as_as_as_As_AS_AS_AS_AS_AS_AS_FD_FD_FD_FD'},
-    {id:'2',name:'text',avatarUrl:'https://pic2.zhimg.com/80/v2-a98aec34a8ee6c0b30c8c178696220be_1440w.jpg?source=1940ef5c',remark : 'remarkTest_as_as_as_As_AS_AS_AS_AS_AS_AS_FD_FD_FD_FD'},
-    {id:'3',name:'text',avatarUrl:'https://pic2.zhimg.com/80/v2-a98aec34a8ee6c0b30c8c178696220be_1440w.jpg?source=1940ef5c',remark : 'remarkTest_as_as_as_As_AS_AS_AS_AS_AS_AS_FD_FD_FD_FD'},
-    {id:'4',name:'text',avatarUrl:'https://pic2.zhimg.com/80/v2-a98aec34a8ee6c0b30c8c178696220be_1440w.jpg?source=1940ef5c',remark : 'remarkTest_as_as_as_As_AS_AS_AS_AS_AS_AS_FD_FD_FD_FD'},
-    {id:'5',name:'text',avatarUrl:'https://pic2.zhimg.com/80/v2-a98aec34a8ee6c0b30c8c178696220be_1440w.jpg?source=1940ef5c',remark : 'remarkTest_as_as_as_As_AS_AS_AS_AS_AS_AS_FD_FD_FD_FD'},
-    {id:'6',name:'text',avatarUrl:'https://pic2.zhimg.com/80/v2-a98aec34a8ee6c0b30c8c178696220be_1440w.jpg?source=1940ef5c',remark : 'remarkTest_as_as_as_As_AS_AS_AS_AS_AS_AS_FD_FD_FD_FD'},
-    {id:'7',name:'text',avatarUrl:'https://pic2.zhimg.com/80/v2-a98aec34a8ee6c0b30c8c178696220be_1440w.jpg?source=1940ef5c',remark : 'remarkTest_as_as_as_As_AS_AS_AS_AS_AS_AS_FD_FD_FD_FD'},
-    {id:'8',name:'text',avatarUrl:'https://pic2.zhimg.com/80/v2-a98aec34a8ee6c0b30c8c178696220be_1440w.jpg?source=1940ef5c',remark : 'remarkTest_as_as_as_As_AS_AS_AS_AS_AS_AS_FD_FD_FD_FD'},]
-}
+import CharacterBar from '../../component/CharacterBar'
+import VenueBar from '../../component/VenueBar'
+import {State} from "@tarojs/components/dist/types/stencil-public-runtime";
+import {CoachInfo, VenueInfo, getCoach, getSwiperPicture, getVenue} from "../../utils/api";
 
 type State = {
   pictureUrl : string[],
-  userInfo : UserInfo[]
+  coachInfo : CoachInfo[],
+  venueInfo : VenueInfo[],
 }
 
 export default class Index extends Component< {}, State> {
-
+  state = {
+    pictureUrl : [],
+    coachInfo : [],
+    venueInfo : [],
+  }
   componentWillMount () {
-    this.setState({...date});
+    const SwiperPictureStorage:[] = Taro.getStorageSync("SwiperPicture");
+    const CoachInfoStorage:[] = Taro.getStorageSync("CoachInfo");
+    const VenueInfoStorage:[] = Taro.getStorageSync("VenueInfo");
+    if(SwiperPictureStorage == undefined || SwiperPictureStorage.length == 0){
+      this.refreshSwiperPicture().then();
+    }else{
+      this.setState({pictureUrl:SwiperPictureStorage});
+    }
+    if(CoachInfoStorage == undefined || CoachInfoStorage.length == 0){
+      this.refreshCoach().then();
+    }else{
+      this.setState({coachInfo:CoachInfoStorage});
+    }
+    if(VenueInfoStorage == undefined || VenueInfoStorage.length == 0){
+      this.refreshVenue().then();
+    }else{
+      this.setState({venueInfo:VenueInfoStorage});
+    }
   }
 
-  componentDidMount () { }
+  refreshSwiperPicture = async ()=>{
+    const result = await getSwiperPicture();
+    Taro.setStorageSync("SwiperPicture", result.data.pictureUrl);
+    this.setState({pictureUrl:result.data.pictureUrl});
+  }
+
+  refreshCoach = async ()=>{
+    const result = await getCoach();
+    Taro.setStorageSync("CoachInfo", result.data.coachInfo);
+    this.setState({coachInfo:result.data.coachInfo});
+  }
+
+  refreshVenue = async ()=>{
+    const result = await getVenue();
+    Taro.setStorageSync("VenueInfo", result.data.venueInfo);
+    this.setState({venueInfo:result.data.venueInfo})
+  }
+
+  componentDidMount () {
+  }
 
   componentWillUnmount () { }
+
+  async onPullDownRefresh () {
+    Taro.showNavigationBarLoading()
+    Taro.stopPullDownRefresh();
+    await this.refreshSwiperPicture();
+    await this.refreshCoach();
+    await this.refreshVenue();
+    setTimeout(()=>{
+      Taro.hideNavigationBarLoading();
+    },500)
+  }
 
   componentDidShow () { }
 
@@ -41,8 +83,8 @@ export default class Index extends Component< {}, State> {
     return (
       <View className='index'>
         <Swiper pictureUrl={this.state.pictureUrl}/>
-        <CharacterBar userInfo={this.state.userInfo}/>
-        <Text>Hello world!</Text>
+        <CharacterBar coachInfo={this.state.coachInfo}/>
+        <VenueBar venueInfo={this.state.venueInfo}/>
       </View>
     )
   }

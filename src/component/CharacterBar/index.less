@@ -1,5 +1,5 @@
 .total{
-  margin-top: 10px;
+  padding-top: 20px;
   background-color: #fefefe;
   .description{
     display: flex;
@@ -12,7 +12,7 @@
       margin-left: 20px;
       >Text{
         margin-left: 10px;
-        color: #5f8fcf;
+        color: #000000;
         font-size: 35px;
         font-weight: bold;
       }
@@ -27,6 +27,7 @@
       }
     }
   }
+  .bar::-webkit-scrollbar{display: none;} //隐藏滚动条
   .bar{
     overflow-x: scroll;
     overflow-y: hidden;
@@ -65,6 +66,7 @@
         margin-right: 15px;
         margin-bottom: 20px;
         overflow: hidden;
+        white-space: nowrap;
         text-overflow: ellipsis;
         font-size: 25px;
         color: rgba(0,0,0,0.4);

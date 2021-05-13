@@ -1,6 +1,6 @@
 Component({
   properties: {
-    // tag
+    // cha | expand | tag
     name: {
       type: String,
     },

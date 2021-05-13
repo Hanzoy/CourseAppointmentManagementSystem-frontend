@@ -1,24 +1,166 @@
-import { Component } from 'react'
-import { View, Text } from '@tarojs/components'
+import { PureComponent } from 'react';
+import {View} from "@tarojs/components";
 import './index.less'
+import Calendar from "../../component/Calendar";
+import Taro from '@tarojs/taro'
+import {CourseTimetable, getMyCourseInfo, GetReservationCourseInfo, login} from "../../utils/api"
+import { AtTabs, AtTabsPane } from 'taro-ui'
+import Course, {CourseInfo, Tab} from "../../component/Course"
+import PubSub from 'pubsub-js'
+import {format} from "../../utils/date";
 
-export default class Index extends Component {
+export interface OwnProps {
 
-  componentWillMount () { }
+}
 
-  componentDidMount () { }
+type Props = OwnProps;
+
+type State = Readonly<{
+  date:Date,
+  current: number,
+  courseInfo:CourseInfo[],
+  tabList:Tab[],
+  courseTimetables:CourseTimetable[],
+}>;
+
+class Index extends PureComponent<Props, State> {
+  readonly state: State = {
+    date: new Date(),
+    current: 0,
+    courseInfo:[],
+    tabList:[],
+    courseTimetables:[],
+
+  };
+
+  handleClick (value) {
+    this.setState({
+      current: value
+    })
+  }
+  componentWillMount () {
+
+  }
+
+  checkNeedRegister =async ()=>{
+    const token = Taro.getStorageSync('token');
+    if(token == undefined || token == ""){
+      const {code} = await Taro.login();
+      const result = await login({code: code});
+      if(result.data.needRegister){
+        Taro.navigateTo({
+          url: '../Login/index'
+        }).then();
+        return;
+      }else{
+        Taro.setStorageSync('token', result.data.token);
+      }
+    }
+    this.showCourseInfo().then();
+  }
+
+  showCourseInfo = async ()=>{
+    await Taro.showLoading();
+    const token = Taro.getStorageSync('token');
+    const result = await getMyCourseInfo({
+      token:token
+    });
+    this.setState({
+      courseInfo:result.data.courseInfo
+    });
+    Taro.hideLoading();
+
+    PubSub.publish('tabList', this.state.courseInfo);
+  }
+
+  componentDidMount () {
+  }
 
   componentWillUnmount () { }
 
-  componentDidShow () { }
+  componentDidShow(){
+    this.checkNeedRegister().then();
+  }
 
   componentDidHide () { }
 
-  render () {
+  // load = async (ldate: Date) => {
+  // load = async () => {
+  //   await Taro.showLoading();
+  //   const res = await getRevs({
+  //     year: ldate.getFullYear().toString(),
+  //     month: (ldate.getMonth() + 1).toString()
+  //   });
+  //   setMonthData(res.data.day);
+  //   setRoomData(res.data.meetingRoom);
+  //   setDate(new Date());
+  //   this.setState({
+  //     date: new Date()
+  //   })
+  //   // console.log(res.data.day)
+  //   Taro.hideLoading();
+  // }
+
+  handleCalendarChange = async (cdate: Date, inMonth: boolean) => {
+    console.log(cdate);
+    this.setState({date:cdate})
+    if (!inMonth) {
+      // await this.load();
+    }
+    const token = Taro.getStorageSync('token');
+    const result = await GetReservationCourseInfo({
+      date:format("yyyy-MM-dd", cdate),
+      token:token
+    })
+    console.log(result)
+    this.setState({
+      courseTimetables: result.data.courseTimetables
+    })
+  }
+
+  render() {
     return (
-      <View className='index'>
-        <Text>Hello world!</Text>
+      <View>
+        <AtTabs
+          animated={false}
+          current={this.state.current}
+          tabList={[
+            { title: '课程预约' },
+            { title: '我的预约' }
+          ]}
+          onClick={this.handleClick.bind(this)}>
+          <AtTabsPane current={this.state.current} index={0} >
+            <View style='padding: 0;background-color: #FAFBFC; height:100vh;' >
+              <Calendar initDate={new Date()} date={this.state.date} onChange={this.handleCalendarChange}/>
+              <Course selectTime={this.state.date} course={this.state.courseInfo} courseTimetables={this.state.courseTimetables}/>
+
+            </View>
+          </AtTabsPane>
+          <AtTabsPane current={this.state.current} index={1}>
+            <View style='padding: 0;background-color: #FAFBFC;'>
+
+              <View>
+                <View>
+
+                </View>
+                <View>
+                  年份： {this.state.date.getFullYear()}
+                </View>
+                <View>
+                  月份：{this.state.date.getMonth()+1}
+                </View>
+                <View>
+                  日期：{this.state.date.getDate()}
+                </View>
+              </View>
+
+            </View>
+          </AtTabsPane>
+        </AtTabs>
+
       </View>
-    )
+    );
   }
 }
+
+export default Index;

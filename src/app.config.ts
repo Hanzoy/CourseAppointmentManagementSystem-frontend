@@ -8,6 +8,8 @@ export default {
     'pages/Reservation/index',
     'pages/Setting/index',
     'pages/CharacterInfo/index',
+    'pages/CharacterList/index',
+    'pages/Login/index',
   ],
   window: {
     backgroundTextStyle: 'light',
@@ -21,7 +23,7 @@ export default {
     list: [
       {
         "selectedIconPath": "images/home_blue.png",
-        "iconPath": "images/home1.png",
+        "iconPath": "images/home.png",
         "pagePath": "pages/Home/index",
         "text": "主页"
       },

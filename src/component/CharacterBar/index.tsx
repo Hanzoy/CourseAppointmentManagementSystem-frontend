@@ -3,16 +3,10 @@ import Taro from "@tarojs/taro";
 import {Image, Text, View} from '@tarojs/components'
 import './index.less'
 import IconFont from "../iconfont";
-
-export type UserInfo = {
-  id : string,
-  name : string,
-  avatarUrl : string,
-  remark : string
-}
+import {CoachInfo} from "../../utils/api";
 
 type Props = {
-  userInfo : UserInfo[]
+  coachInfo : CoachInfo[]
 }
 
 
@@ -28,18 +22,25 @@ export default class Index extends Component<Props, {}>  {
 
   componentDidHide () { }
 
-  clickItem(id) {
+  clickItem = (Id)=>{
     return ()=>{
       Taro.navigateTo({
-        url: `../../pages/CharacterInfo/index?id=${id}`
-      }).then(r =>{
-        console.log(r);
+        url: `../../pages/CharacterInfo/index?id=${Id}`
+      }).then((value)=>{
+        console.log(Id);
+        console.log(value);
       })
     }
   }
-
+  clickLookMoreCharacter = ()=>{
+    Taro.navigateTo({
+      url : "../../pages/CharacterList/index"
+    }).then((value)=>{
+      console.log(value);
+    })
+  }
   render () {
-    const {userInfo} = this.props;
+    const {coachInfo} = this.props;
     return (
       <View className='total'>
         <View className='description'>
@@ -47,12 +48,12 @@ export default class Index extends Component<Props, {}>  {
             <IconFont name='tag' size={50} color="#4f8fff"/>
             <Text>教练团队</Text>
           </View>
-          <View className='more'>
+          <View className='more' onClick={this.clickLookMoreCharacter}>
             <Text>查看更多</Text>
           </View>
         </View>
         <View className='bar'>
-          {userInfo.map(value => {
+          {coachInfo.map(value => {
             return(
               <View key={value.id} className='bar-item' onClick={this.clickItem(value.id)}>
                 <View className='bar-item-image'>

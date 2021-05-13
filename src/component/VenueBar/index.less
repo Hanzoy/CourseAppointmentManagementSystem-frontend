@@ -1,0 +1,67 @@
+.total{
+  margin-top: 20px;
+  background-color: #fefefe;
+  .description{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    .title{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin-left: 20px;
+      >Text{
+        margin-left: 10px;
+        color: #000000;
+        font-size: 35px;
+        font-weight: bold;
+      }
+    }
+    //.more{
+    //  color: rgba(0,0,0,0.3);
+    //  display: flex;
+    //  flex-direction: row;
+    //  align-items: center;
+    //  >Text{
+    //    margin-right: 20px;
+    //  }
+    //}
+  }
+  .info{
+    width: 100vw;
+    .swiper{
+      height: 40vh;
+      .swiper-item{
+        .name{
+          margin-top: 10px;
+          margin-left: 7vw;
+          font-size: 35px;
+          color: rgba(0,0,0,0.5);
+          font-weight: bold;
+        }
+        .address{
+          margin-top: 20px;
+          margin-left: 7vw;
+          margin-bottom: 20px;
+          font-size: 30px;
+          color: rgba(0,0,0,0.7);
+        }
+        .picture{
+          height: 45vw;
+          width: 100vw;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          .swiper-item-picture{
+            height: 45vw;
+            width: 90vw;
+            border-radius: 10px;
+            background-color: #ffffff;
+            box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2), 0 4.5px 15px 0 rgba(0, 0, 0, 0.19);//设置两层阴影
+
+          }
+        }
+      }
+    }
+  }
+}
