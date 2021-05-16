@@ -10,6 +10,7 @@ export default {
     'pages/CharacterInfo/index',
     'pages/CharacterList/index',
     'pages/Login/index',
+    'pages/CourseInfo/index',
   ],
   window: {
     backgroundTextStyle: 'light',

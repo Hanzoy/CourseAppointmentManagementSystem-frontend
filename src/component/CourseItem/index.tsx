@@ -3,6 +3,7 @@ import {Image, Text, View} from "@tarojs/components";
 import './index.less'
 import {AtAvatar} from "taro-ui";
 import {Timetable} from "../../utils/api";
+import Taro from "@tarojs/taro";
 
 export interface OwnProps {
   timetable:Timetable,
@@ -33,6 +34,11 @@ class Index extends PureComponent<Props, State> {
 
   click = ()=>{
     console.log(this.props.timetable.id)
+    Taro.navigateTo({
+      url : `../../pages/CourseInfo/index?id=${this.props.timetable.id}`
+    }).then((value)=>{
+      console.log(value);
+    })
   }
 
   render() {
@@ -71,9 +77,9 @@ class Index extends PureComponent<Props, State> {
                       预约人数：{this.props.timetable.count}/{this.props.timetable.toplimit}
                     </Text>
                   </View>
-                  <View className="click">
+                  <View className={this.props.timetable.isReservation?"hasReservation":"noReservation"}>
                     <Text>
-                      去预定
+                      {this.props.timetable.isReservation?"已预约":"去预约"}
                     </Text>
                   </View>
                 </View>

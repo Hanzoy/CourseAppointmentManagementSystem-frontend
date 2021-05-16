@@ -1,5 +1,4 @@
 import Request from './request'
-import {CourseInfo} from "../component/Course";
 
 /*========================================================*/
 // 查询轮播图图片
@@ -173,7 +172,43 @@ export const GetReservationCourseInfo = async (data:GetReservationCourseInfoPara
     data: data
   })
 }
+/*========================================================*/
 
+
+/*========================================================*/
+//根据id查询课程预约信息
+export type GetCourseInfoResult = BaseResult<CourseInfo>
+
+export type CourseInfo = {
+  courseId:number,
+  name:string,
+  backgroundUrl:string,
+  surplusCount:number,
+  timetableId:number,
+  coachName:string,
+  coachAvatarUrl:string,
+  date:string,
+  startTime:string,
+  endTime:string,
+  toplimit:number,
+  remark:string,
+  address:string,
+  count:number,
+  isReservation:boolean
+}
+
+export type GetCourseInfoParam = {
+  token:string,
+  id:number
+}
+
+export const getCourseInfo = async (data:GetCourseInfoParam)=>{
+  return await Request<GetCourseInfoParam, GetCourseInfoResult>({
+    url: '/course/getCourseInfo',
+    method: 'POST',
+    data: data
+  })
+}
 /*========================================================*/
 
 
