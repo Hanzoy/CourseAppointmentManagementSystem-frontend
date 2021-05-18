@@ -3,7 +3,7 @@ import {View} from "@tarojs/components";
 import './index.less'
 import Calendar from "../../component/Calendar";
 import Taro from '@tarojs/taro'
-import {CourseTimetable, getMyCourseInfo, GetReservationCourseInfo, login} from "../../utils/api"
+import {CheckToken, CourseTimetable, getMyCourseInfo, GetReservationCourseInfo, login} from "../../utils/api"
 import { AtTabs, AtTabsPane } from 'taro-ui'
 import Course, {CourseInfo, Tab} from "../../component/Course"
 import PubSub from 'pubsub-js'
@@ -56,6 +56,7 @@ class Index extends PureComponent<Props, State> {
         Taro.setStorageSync('token', result.data.token);
       }
     }
+    await this.checkTokenAndRefreshToken(token);
     this.showCourseInfo().then();
   }
 
@@ -71,6 +72,20 @@ class Index extends PureComponent<Props, State> {
     Taro.hideLoading();
 
     PubSub.publish('tabList', this.state.courseInfo);
+  }
+
+  checkTokenAndRefreshToken = async (token:string)=>{
+    const checkTokenResult = await CheckToken({
+      token:token
+    })
+    if(checkTokenResult.code !== "00000"){
+      const {code} = await Taro.login();
+      const loginResult = await login({code: code});
+      Taro.setStorageSync("token",loginResult.data.token)
+      console.log("token已更新");
+      token = loginResult.data.token;
+    }
+    return token
   }
 
   componentDidMount () {
@@ -108,14 +123,32 @@ class Index extends PureComponent<Props, State> {
       // await this.load();
     }
     const token = Taro.getStorageSync('token');
-    const result = await GetReservationCourseInfo({
-      date:format("yyyy-MM-dd", cdate),
-      token:token
-    })
-    console.log(result)
-    this.setState({
-      courseTimetables: result.data.courseTimetables
-    })
+    let result;
+    try{
+      result = await GetReservationCourseInfo({
+        date: format("yyyy-MM-dd", cdate),
+        token: token
+      })
+      console.log(result)
+      this.setState({
+        courseTimetables: result.data.courseTimetables
+      })
+    }catch (e){
+      console.log("catch");
+      // const freshToken = Taro.getStorageSync("token");
+      const {code} = await Taro.login();
+      const loginResult = await login({code: code});
+      setTimeout(async ()=>{
+        result = await GetReservationCourseInfo({
+          date: format("yyyy-MM-dd", cdate),
+          token: loginResult.data.token
+        })
+        console.log(result)
+        this.setState({
+          courseTimetables: result.data.courseTimetables
+        })
+      },2000)
+    }
   }
 
   render() {

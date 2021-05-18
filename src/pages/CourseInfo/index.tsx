@@ -3,7 +3,7 @@ import {Image, Text, View} from "@tarojs/components";
 import './index.less'
 import {AtAvatar, AtNoticebar} from "taro-ui";
 import Taro from "@tarojs/taro";
-import {CourseInfo, getCourseInfo} from "../../utils/api";
+import {TheCourseInfo, getCourseInfo} from "../../utils/api";
 import IconFont from "../../component/iconfont";
 
 export interface OwnProps {
@@ -13,7 +13,7 @@ export interface OwnProps {
 type Props = OwnProps;
 
 type State = Readonly<{
-  data:CourseInfo
+  data:TheCourseInfo
 }>;
 
 class Index extends PureComponent<Props, State> {
