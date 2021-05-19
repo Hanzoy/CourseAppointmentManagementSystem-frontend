@@ -233,3 +233,29 @@ export const CheckToken = async (data:CheckTokenParam)=>{
 /*========================================================*/
 
 
+/*========================================================*/
+//预约与取消预约
+export type ReservationCourseResult = BaseResult<{
+  result:boolean,
+  message:string
+}>
+
+export type ReservationCourseParam = {
+  token:string,
+  id:number,
+  isReservation:boolean
+}
+
+export const ReservationCourse = async (data:ReservationCourseParam)=>{
+  return await Request<ReservationCourseParam, ReservationCourseResult>({
+    url:'/course/reservationCourse',
+    method: 'POST',
+    data: data
+  })
+}
+
+/*========================================================*/
+
+
+
+

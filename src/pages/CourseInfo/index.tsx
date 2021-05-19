@@ -3,7 +3,7 @@ import {Image, Text, View} from "@tarojs/components";
 import './index.less'
 import {AtAvatar, AtNoticebar} from "taro-ui";
 import Taro from "@tarojs/taro";
-import {TheCourseInfo, getCourseInfo} from "../../utils/api";
+import {TheCourseInfo, getCourseInfo, ReservationCourse} from "../../utils/api";
 import IconFont from "../../component/iconfont";
 
 export interface OwnProps {
@@ -59,6 +59,72 @@ class Index extends PureComponent<Props, State> {
   componentDidShow () { }
 
   componentDidHide () { }
+
+  reservation = async ()=>{
+    await Taro.showLoading();
+
+    const token = Taro.getStorageSync("token");
+    const result = await ReservationCourse({
+      token: token,
+      id: this.state.data.timetableId,
+      isReservation: true
+    })
+
+    Taro.hideLoading();
+    if(result.data.result){
+      const result = await getCourseInfo({
+        token:token,
+        id:this.state.data.timetableId
+      })
+      this.setState({
+        data:result.data
+      })
+      await Taro.showToast({
+        title:"预约成功",
+        icon: "success",
+        duration: 2000
+      })
+      console.log(result)
+    }else{
+      await Taro.showToast({
+        title:"预约失败",
+        icon: "error",
+        duration: 2000
+      })
+    }
+  }
+
+  cancelReservation = async ()=>{
+   await Taro.showLoading();
+    const token = Taro.getStorageSync("token");
+    const result = await ReservationCourse({
+      token: token,
+      id: this.state.data.timetableId,
+      isReservation: false
+    })
+    Taro.hideLoading();
+    if(result.data.result){
+      const result = await getCourseInfo({
+        token:token,
+        id:this.state.data.timetableId
+      })
+      this.setState({
+        data:result.data
+      })
+      await Taro.showToast({
+        title:"预约成功",
+        icon: "success",
+        duration: 2000
+      })
+      console.log(result)
+    }else {
+      await Taro.showToast({
+        title:"取消预约失败",
+        icon: "error",
+        duration: 2000
+      })
+    }
+  }
 
   render() {
     return (
@@ -117,12 +183,12 @@ class Index extends PureComponent<Props, State> {
         </View>
         <View className="click">
         {this.state.data.isReservation?
-          <View className="click-hasReservation">
+          <View className="click-hasReservation" onClick={this.cancelReservation}>
             <Text>
               取消预约
             </Text>
           </View>
-          :<View className="click-noReservation">
+          :<View className="click-noReservation" onClick={this.reservation}>
             <Text>
               预约
             </Text>

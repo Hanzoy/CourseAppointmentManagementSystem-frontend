@@ -93,8 +93,9 @@ class Index extends PureComponent<Props, State> {
 
   componentWillUnmount () { }
 
-  componentDidShow(){
+  async componentDidShow(){
     this.checkNeedRegister().then();
+    await this.handleCalendarChange(this.state.date,false);
   }
 
   componentDidHide () { }
@@ -163,7 +164,7 @@ class Index extends PureComponent<Props, State> {
           ]}
           onClick={this.handleClick.bind(this)}>
           <AtTabsPane current={this.state.current} index={0} >
-            <View style='padding: 0;background-color: #FAFBFC; height:100vh;' >
+            <View style={'padding: 0;background-color: #FAFBFC;height:100vh'}>
               <Calendar initDate={new Date()} date={this.state.date} onChange={this.handleCalendarChange}/>
               <Course selectTime={this.state.date} course={this.state.courseInfo} courseTimetables={this.state.courseTimetables}/>
 

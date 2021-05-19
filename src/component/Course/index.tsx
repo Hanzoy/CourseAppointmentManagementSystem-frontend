@@ -114,9 +114,18 @@ class Index extends Component<Props, State> {
             tabList={this.state.tabList}
             onClick={this.handleClick.bind(this)}>
             {this.props.course.map((value, index)=>{
+              const timetable = this.props.courseTimetables.find((values)=>{
+                return  values.id === value.id
+              })
+              let height:number;
+              if(timetable == undefined || timetable.timetables.length <= 3){
+                height = 100;
+              }else{
+                height = timetable.timetables.length * 40
+              }
               return(
                 <AtTabsPane tabDirection='vertical' current={this.state.current} index={index}>
-                  <View style='font-size:18px;height:100vh;width:80vw' className="pages">
+                  <View style={'font-size:18px;width:80vw;height:'+height+'vh;'} className="pages">
                     <View className="count">
                       <Text>
                         当前用户剩余课时数量：{value.count}
