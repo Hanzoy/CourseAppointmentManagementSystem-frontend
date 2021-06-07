@@ -6,6 +6,7 @@ import {eventCenter, getCurrentInstance} from '@tarojs/taro'
 import PubSub from 'pubsub-js'
 import {CourseTimetable} from "../../utils/api";
 import CourseItem from "../CourseItem"
+import Empty from "../Empty"
 
 export interface OwnProps {
   course:CourseInfo[],
@@ -18,6 +19,7 @@ export type CourseInfo = {
   name:string,
   backgroundUrl:string,
   count:number,
+  money:number
 }
 
 export type Tab = {
@@ -118,7 +120,7 @@ class Index extends Component<Props, State> {
                 return  values.id === value.id
               })
               let height:number;
-              if(timetable == undefined || timetable.timetables.length <= 3){
+              if(timetable == undefined || timetable.timetables.length < 3){
                 height = 100;
               }else{
                 height = timetable.timetables.length * 40
@@ -127,28 +129,45 @@ class Index extends Component<Props, State> {
                 <AtTabsPane tabDirection='vertical' current={this.state.current} index={index}>
                   <View style={'font-size:18px;width:80vw;height:'+height+'vh;'} className="pages">
                     <View className="count">
-                      <Text>
-                        当前用户剩余课时数量：{value.count}
-                      </Text>
+                      <View className="text">
+                        <Text>
+                          该课程剩余课时数量：{value.count}
+                        </Text>
+                      </View>
+                      <View className="text">
+                        <Text>
+                          该课程剩余金额：{value.count*value.money}元
+                        </Text>
+                      </View>
                     </View>
                     <View>
-                      {this.props.courseTimetables?.map((values)=>{
-                        if(values.id === value.id){
-                          return(
-                            <View>
+                      {
+                        this.props.courseTimetables?.map((values)=>{
+                          if(values.id === value.id){
+                            return(
                               <View>
-                                {
-                                  values.timetables?.map((val)=>{
-                                    return(
-                                      <CourseItem timetable={val} name={value.name} courseUrl={value.backgroundUrl}/>
-                                    )
-                                  })
-                                }
+                                <View>
+                                  {
+                                    values.timetables.length === 0?
+                                      <View>
+                                        <Empty/>
+                                      </View>
+                                      :<View>
+                                      </View>
+                                  }
+                                  {
+                                    values.timetables?.map((val)=>{
+                                      return(
+                                        <CourseItem timetable={val} name={value.name} courseUrl={value.backgroundUrl} date={""}/>
+                                      )
+                                    })
+                                  }
+                                </View>
                               </View>
-                            </View>
-                          )
-                        }
-                      })}
+                            )
+                          }
+                        })
+                      }
                     </View>
                   </View>
                 </AtTabsPane>

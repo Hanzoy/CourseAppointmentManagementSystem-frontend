@@ -9,6 +9,7 @@ export interface OwnProps {
   timetable:Timetable,
   name:string,
   courseUrl:string,
+  date:string
 }
 
 type Props = OwnProps;
@@ -68,7 +69,7 @@ class Index extends PureComponent<Props, State> {
                 </View>
                 <View className="time">
                   <Text>
-                    {this.props.timetable.startTime + "-" + this.props.timetable.endTime}
+                    {this.props.date+" "+this.props.timetable.startTime + "-" + this.props.timetable.endTime}
                   </Text>
                 </View>
                 <View className="last-bottom">

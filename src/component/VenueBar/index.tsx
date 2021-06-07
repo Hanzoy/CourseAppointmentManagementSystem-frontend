@@ -3,6 +3,7 @@ import {Image, Swiper, SwiperItem, Text, View} from '@tarojs/components'
 import './index.less'
 import IconFont from "../iconfont";
 import {VenueInfo} from "../../utils/api";
+import Taro from "@tarojs/taro";
 
 type Props = {
   venueInfo : VenueInfo[]
@@ -20,6 +21,14 @@ export default class Index extends Component<Props, {}>  {
 
   componentDidHide () { }
 
+  clickImage = (value)=>{
+    return ()=>{
+      Taro.previewImage({
+        urls:this.props.venueInfo.map(item => item.pictureUrl),
+        current: value
+      }).then()
+    }
+  }
   render () {
     return (
       <View className='total'>
@@ -47,7 +56,7 @@ export default class Index extends Component<Props, {}>  {
                       <Text>地址：{value.address}</Text>
                     </View>
                     <View className="picture">
-                      <Image src={value.pictureUrl} className={'swiper-item-picture'}/>
+                      <Image src={value.pictureUrl} className={'swiper-item-picture'} onClick={this.clickImage(value.pictureUrl)}/>
                     </View>
                   </View>
                 </SwiperItem>

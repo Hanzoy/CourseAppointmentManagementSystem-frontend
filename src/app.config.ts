@@ -11,6 +11,7 @@ export default {
     'pages/CharacterList/index',
     'pages/Login/index',
     'pages/CourseInfo/index',
+    'pages/SettingInformation/index',
   ],
   window: {
     backgroundTextStyle: 'light',

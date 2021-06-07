@@ -46,11 +46,19 @@ class Index extends PureComponent<Props, State> {
 
   componentDidHide () { }
 
+  clickImage = ()=>{
+    return ()=>{
+      Taro.previewImage({
+        urls: [this.state.backgroundUrl],
+      }).then()
+    }
+  }
+
   render () {
     return (
       <View className='index'>
         <View className='background'>
-          <Image src={this.state.backgroundUrl} className='background-image' mode="aspectFill"/>
+          <Image src={this.state.backgroundUrl} className='background-image' mode="aspectFill" onClick={this.clickImage()}/>
         </View>
         <View className="info">
           <View className="name">

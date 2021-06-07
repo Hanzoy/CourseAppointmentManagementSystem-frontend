@@ -1,6 +1,6 @@
 Component({
   properties: {
-    // dizhi | mulu | shijian | renshu | cha | expand | tag
+    // shezhi | kong | dizhi | mulu | shijian | renshu | cha | expand | tag
     name: {
       type: String,
     },

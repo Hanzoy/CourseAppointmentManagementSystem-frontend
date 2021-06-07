@@ -256,6 +256,95 @@ export const ReservationCourse = async (data:ReservationCourseParam)=>{
 
 /*========================================================*/
 
+/*========================================================*/
+//查询已经预约的课程
+export type HasReservationCourseResult = BaseResult<{
+  courseInfos: CourseAndTimetableInfo[]
+}>
+
+export type CourseAndTimetableInfo = {
+  id: number,
+  courseName: string,
+  timetableInfos: TimetableInfo[],
+}
+
+export type TimetableInfo = {
+  courseId:number,
+  name:string,
+  backgroundUrl:string,
+  surplusCount:number,
+  timetableId:number,
+  coachName:string,
+  coachAvatarUrl:string,
+  date:string,
+  startTime:string,
+  endTime:string,
+  toplimit:number,
+  remark:string,
+  address:string,
+  count:number,
+  isReservation:boolean
+}
+
+export type HasReservationCourseParam = {
+  token: string
+}
+
+export const HasReservationCourse = async (data:HasReservationCourseParam)=>{
+  return await Request<HasReservationCourseParam, HasReservationCourseResult>({
+    url:'/course/hasReservationCourse',
+    method: 'POST',
+    data: data
+  })
+}
+/*========================================================*/
+
+/*========================================================*/
+//获取用户信息
+export type GetUserInfoResult = BaseResult<{
+  userInfo: UserInfo
+}>
+
+export type UserInfo = {
+  name: string,
+  nickName: string,
+  avatarUrl: string,
+  phone: string,
+}
+
+export type GetUserInfoParam = {
+  token: string,
+  openid: string
+}
+
+export const GetUserInfo = async (data:GetUserInfoParam)=>{
+  return await Request<GetUserInfoParam, GetUserInfoResult>({
+    url:'/user/getUserInfo',
+    method: 'POST',
+    data: data
+  })
+}
+/*========================================================*/
+
+/*========================================================*/
+//修改个人信息
+export type ChangeInformationResult = BaseResult<{
+
+}>
+export type ChangeInformationParam = {
+  token: string,
+  name: string,
+  phone: string
+}
+export const ChangeInformation = async (data:ChangeInformationParam)=>{
+  return await Request<ChangeInformationParam, ChangeInformationResult>({
+    url:'/user/changeInformation',
+    method: 'POST',
+    data: data
+  })
+}
+/*========================================================*/
+
 
 
 

@@ -3,11 +3,21 @@ import {View} from "@tarojs/components";
 import './index.less'
 import Calendar from "../../component/Calendar";
 import Taro from '@tarojs/taro'
-import {CheckToken, CourseTimetable, getMyCourseInfo, GetReservationCourseInfo, login} from "../../utils/api"
-import { AtTabs, AtTabsPane } from 'taro-ui'
+import {
+  CheckToken,
+  CourseTimetable,
+  getMyCourseInfo,
+  GetReservationCourseInfo,
+  HasReservationCourse,
+  login,
+  CourseAndTimetableInfo
+} from "../../utils/api"
+import { AtTabs, AtTabsPane, AtSegmentedControl } from 'taro-ui'
 import Course, {CourseInfo, Tab} from "../../component/Course"
 import PubSub from 'pubsub-js'
 import {format} from "../../utils/date";
+import CourseItem from "../../component/CourseItem";
+import Empty from "../../component/Empty"
 
 export interface OwnProps {
 
@@ -21,6 +31,8 @@ type State = Readonly<{
   courseInfo:CourseInfo[],
   tabList:Tab[],
   courseTimetables:CourseTimetable[],
+  hasReservationCourseInfo: CourseAndTimetableInfo[],
+  current2: number,
 }>;
 
 class Index extends PureComponent<Props, State> {
@@ -30,9 +42,14 @@ class Index extends PureComponent<Props, State> {
     courseInfo:[],
     tabList:[],
     courseTimetables:[],
-
+    hasReservationCourseInfo:[],
+    current2: 0,
   };
-
+  handleClick2 (value) {
+    this.setState({
+      current2: value
+    })
+  }
   handleClick (value) {
     this.setState({
       current: value
@@ -96,6 +113,9 @@ class Index extends PureComponent<Props, State> {
   async componentDidShow(){
     this.checkNeedRegister().then();
     await this.handleCalendarChange(this.state.date,false);
+    const result = await HasReservationCourse({token:Taro.getStorageSync("token")})
+    console.log("Has",result);
+    this.setState({hasReservationCourseInfo: result.data.courseInfos})
   }
 
   componentDidHide () { }
@@ -174,18 +194,49 @@ class Index extends PureComponent<Props, State> {
             <View style='padding: 0;background-color: #FAFBFC;'>
 
               <View>
-                <View>
 
-                </View>
-                <View>
-                  年份： {this.state.date.getFullYear()}
-                </View>
-                <View>
-                  月份：{this.state.date.getMonth()+1}
-                </View>
-                <View>
-                  日期：{this.state.date.getDate()}
-                </View>
+                <AtSegmentedControl
+                  values={this.state.hasReservationCourseInfo.map(item => item.courseName)}
+                  onClick={this.handleClick2.bind(this)}
+                  current={this.state.current2}
+                />
+                {
+                  this.state.hasReservationCourseInfo.map((item, index)=>{
+                    if(index === this.state.current2){
+                      return (
+                        <View className="show">
+                          {
+                            item.timetableInfos.length === 0?
+                              <Empty/>
+                              :<View>
+
+                              </View>
+                          }
+                          {
+                            item.timetableInfos.map((item)=>{
+                              return (
+                                <CourseItem timetable={
+                                  {
+                                    id:item.timetableId,
+                                    coachName:item.coachName,
+                                    coachAvatarUrl: item.coachAvatarUrl,
+                                    startTime:item.startTime,
+                                    endTime:item.endTime,
+                                    toplimit:item.toplimit,
+                                    remark:item.remark,
+                                    address:item.address,
+                                    count:item.count,
+                                    isReservation:item.isReservation
+                                  }
+                                } name={item.name} courseUrl={item.backgroundUrl} date={item.date}/>
+                              )
+                            })
+                          }
+                        </View>
+                      )
+                    }
+                  })
+                }
               </View>
 
             </View>
